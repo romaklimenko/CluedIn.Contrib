@@ -1,28 +1,28 @@
 <Project>
-    <PropertyGroup>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-    </PropertyGroup>
+  <PropertyGroup>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
 
-    <PropertyGroup Label="Compilation Metadata">
-        <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
+  <PropertyGroup Label="Compilation Metadata">
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
 
-    <PropertyGroup Label="Assembly Metadata">
-        <VersionPrefix>1.0.0</VersionPrefix>
-        <Company>CluedIn</Company>
-        <Copyright>Copyright (c) 2024 $(Company). All rights reserved.</Copyright>
-        <Product>$(Company)</Product>
-        <Description>$(MSBuildProjectName) library.</Description>
-        <AssemblyTitle>$(MSBuildProjectName)</AssemblyTitle>
-        <AssemblyName>$(Product).$(AssemblyTitle)</AssemblyName>
-        <RootNamespace>$(AssemblyName)</RootNamespace>
-    </PropertyGroup>
+  <PropertyGroup Label="Assembly Metadata">
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <Company>CluedIn</Company>
+    <Copyright>Copyright (c) 2024 $(Company). All rights reserved.</Copyright>
+    <Product>$(Company)</Product>
+    <Description>$(MSBuildProjectName) library.</Description>
+    <AssemblyTitle>$(MSBuildProjectName)</AssemblyTitle>
+    <AssemblyName>$(Product).$(AssemblyTitle)</AssemblyName>
+    <RootNamespace>$(MSBuildProjectName)</RootNamespace>
+  </PropertyGroup>
 
-    <PropertyGroup Label="Package Metadata">
-        <Title>$(RootNamespace)</Title>
-        <Authors>$(Company)</Authors>
-    </PropertyGroup>
+  <PropertyGroup Label="Package Metadata">
+    <Title>$(RootNamespace)</Title>
+    <Authors>$(Company)</Authors>
+  </PropertyGroup>
 
 </Project>
