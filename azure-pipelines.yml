@@ -1,0 +1,51 @@
+trigger:
+  batch: "true"
+  branches:
+    include:
+      - master
+      - develop
+
+pr:
+  branches:
+    include:
+      - master
+      - develop
+
+variables:
+  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
+    versionSuffix: ".$(build.buildnumber)"
+  ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}:
+    versionSuffix: "dev.$(build.buildnumber)"
+  ${{ elseif startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
+    versionSuffix: "pr$(System.PullRequest.PullRequestNumber).$(build.buildnumber)"
+  ${{ else }}:
+    versionSuffix: "feature.$(build.buildnumber)"
+
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: "Build"
+    inputs:
+      command: build
+
+  - task: DotNetCoreCLI@2
+    displayName: Test
+    inputs:
+      command: test
+      arguments: '--no-build --collect:"XPlat Code Coverage"'
+
+  - task: DotNetCoreCLI@2
+    displayName: Pack
+    inputs:
+      command: pack
+      arguments: "-o $(Build.ArtifactStagingDirectory) --no-build"
+
+  - task: PublishCodeCoverageResults@2
+    inputs:
+      summaryFileLocation: "$(Agent.TempDirectory)/**/coverage.cobertura.xml"
+      failIfCoverageEmpty: true
+    displayName: "Publish Coverage Report"
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)
+      ArtifactName: ArtifactStagingDirectory
