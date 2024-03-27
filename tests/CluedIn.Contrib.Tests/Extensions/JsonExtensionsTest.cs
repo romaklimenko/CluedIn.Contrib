@@ -6,7 +6,7 @@ namespace CluedIn.Contrib.Tests.Extensions;
 public class JsonExtensionsTest
 {
     [Fact]
-    public void FlattenTest()
+    public void Flatten_NestedJson()
     {
         // Arrange
         var json = "{ \"a\": { \"b\": 1 }, \"c\": \"d\", \"e\": [ { \"f\": \"f0\" }, { \"f\": \"f1\" } ] }";
