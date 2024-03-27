@@ -261,9 +261,9 @@ public class EnrichTest
         return new HttpResponseMessage
         {
             Content = new StringContent(
-                formData["is_preview"] is null
-                    ? "{ \"a\": \"enriched_a\", \"b\": \"enriched_b\" }"
-                    : "{ \"a\": \"preview_enriched_a\", \"b\": \"preview_enriched_b\" }",
+                formData["is_preview"] == "true"
+                    ? "{ \"a\": \"preview_enriched_a\", \"b\": \"preview_enriched_b\" }"
+                    : "{ \"a\": \"enriched_a\", \"b\": \"enriched_b\" }",
                 Encoding.UTF8,
                 "application/json")
         };
