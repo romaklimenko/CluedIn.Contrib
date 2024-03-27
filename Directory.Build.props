@@ -3,6 +3,10 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
+  <PropertyGroup Label="Msbuild Handling">
+    <WarningsAsErrors>NU1602</WarningsAsErrors>
+  </PropertyGroup>
+
   <PropertyGroup Label="Compilation Metadata">
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
