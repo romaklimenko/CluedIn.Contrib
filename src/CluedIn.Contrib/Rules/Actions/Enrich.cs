@@ -121,10 +121,9 @@ public class Enrich : BaseRuleAction, IScopedRuleAction
                 vocabKey => vocabKey,
                 vocabKey => entityMetadataPart.Properties[vocabKey]);
 
-        if (isPreview)
-        {
-            formUrlEncodedContent["is_preview"] = "true";
-        }
+        formUrlEncodedContent["is_preview"] = isPreview
+            ? "true"
+            : "false";
 
         using var httpResponseMessage = await _httpClient
             .PostAsync(
