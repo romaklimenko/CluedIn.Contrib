@@ -105,7 +105,7 @@ public class Enrich : BaseRuleAction, IScopedRuleAction
             : "false";
 
         var httpRequestMessage = new HttpRequestMessage(
-            HttpMethod.Get,
+            HttpMethod.Post,
             UrlFieldValue) { Content = new FormUrlEncodedContent(formUrlEncodedContent) };
         if (Environment.GetEnvironmentVariable(ApiKeyEnvironmentVariableName) is var apiKey
             && !string.IsNullOrEmpty(apiKey))

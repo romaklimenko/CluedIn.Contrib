@@ -207,6 +207,31 @@ public class EnrichTest
         Assert.Equal("preview_enriched_b", entityMetadataPart.Properties["enrich.b"]);
     }
 
+    [Fact(Skip = "Integration")]
+    public void Run_Integration_Enriches()
+    {
+        // Arrange
+        Environment.SetEnvironmentVariable(
+            "CLUEDIN_RULE_ACTION_API_KEY",
+            _apiKey);
+        var enrich = new Enrich
+        {
+            UrlFieldValue = "https://postcodes.azurewebsites.net/api/postcodes",
+            PayloadFieldValue = "customer.postcode",
+            VocabularyPrefixFieldValue = "customer.postcode"
+        };
+        var entityMetadataPart =
+            new ProcessedEntityMetadataPart { Properties = { ["customer.postcode"] = "GL54 4HR" } };
+        // Act
+        var ruleActionResult = enrich.Run(
+            _context,
+            entityMetadataPart,
+            false);
+        // Assert
+        Assert.True(ruleActionResult.IsSuccess);
+        Assert.Equal(42, entityMetadataPart.Properties.Count);
+    }
+
     [Fact]
     public void Run_NoApiKey_Forbidden()
     {
