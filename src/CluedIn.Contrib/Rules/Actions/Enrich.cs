@@ -43,13 +43,6 @@ public class Enrich : BaseRuleAction, IScopedRuleAction
     // ReSharper disable once PropertyCanBeMadeInitOnly.Global
     public string? VocabularyPrefixFieldValue { get; set; }
 
-    [RuleProperty(
-        FriendlyName = "Cache Expiration Time (in minutes)",
-        Kind = ActionControlKind.Text,
-        IsRequired = true)]
-    // ReSharper disable once PropertyCanBeMadeInitOnly.Global
-    public string? CacheExpirationTimeInMinutesFieldValue { get; set; }
-
     public override string Name => "Enrich";
     public override bool SupportsPreview => true;
 
@@ -95,21 +88,6 @@ public class Enrich : BaseRuleAction, IScopedRuleAction
         {
             return RuleActionResult.Failure(
                 $"The field {nameof(VocabularyPrefixFieldValue)} cannot be empty.");
-        }
-
-        if (string.IsNullOrWhiteSpace(
-                CacheExpirationTimeInMinutesFieldValue))
-        {
-            return RuleActionResult.Failure(
-                $"The field {nameof(CacheExpirationTimeInMinutesFieldValue)} cannot be empty.");
-        }
-
-        // TODO: Handle cache
-        if (!int.TryParse(CacheExpirationTimeInMinutesFieldValue,
-                out var cacheExpirationTimeInMinutes))
-        {
-            return RuleActionResult.Failure(
-                $"Can't parse {CacheExpirationTimeInMinutesFieldValue}.");
         }
 
         var formUrlEncodedContent = PayloadFieldValue
