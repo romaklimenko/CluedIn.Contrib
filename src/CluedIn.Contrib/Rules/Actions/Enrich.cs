@@ -11,6 +11,7 @@ namespace CluedIn.Contrib.Rules.Actions;
 
 public class Enrich : BaseRuleAction, IScopedRuleAction
 {
+    private const string ApiKeyEnvironmentVariableName = "CLUEDIN_RULE_ACTION_API_KEY";
     private readonly HttpClient _httpClient;
 
     public Enrich() : this(new HttpClient())
@@ -54,7 +55,7 @@ public class Enrich : BaseRuleAction, IScopedRuleAction
     {
         try
         {
-            return RunAsync(context, entityMetadataPart, isPreview)
+            return RunAsync(entityMetadataPart, isPreview)
                 .GetAwaiter()
                 .GetResult();
         }
@@ -69,7 +70,7 @@ public class Enrich : BaseRuleAction, IScopedRuleAction
         }
     }
 
-    private async Task<RuleActionResult> RunAsync(ProcessingContext context, IEntityMetadataPart entityMetadataPart,
+    private async Task<RuleActionResult> RunAsync(IEntityMetadataPart entityMetadataPart,
         bool isPreview)
     {
         if (string.IsNullOrWhiteSpace(UrlFieldValue))
@@ -103,10 +104,17 @@ public class Enrich : BaseRuleAction, IScopedRuleAction
             ? "true"
             : "false";
 
+        var httpRequestMessage = new HttpRequestMessage(
+            HttpMethod.Get,
+            UrlFieldValue) { Content = new FormUrlEncodedContent(formUrlEncodedContent) };
+        if (Environment.GetEnvironmentVariable(ApiKeyEnvironmentVariableName) is var apiKey
+            && !string.IsNullOrEmpty(apiKey))
+        {
+            httpRequestMessage.Headers.Add("X-ApiKey", apiKey);
+        }
+
         using var httpResponseMessage = await _httpClient
-            .PostAsync(
-                UrlFieldValue,
-                new FormUrlEncodedContent(formUrlEncodedContent))
+            .SendAsync(httpRequestMessage)
             .ConfigureAwait(false);
 
         var stream = await httpResponseMessage.Content.ReadAsStreamAsync()

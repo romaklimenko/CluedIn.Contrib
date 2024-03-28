@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text;
 using System.Web;
 using CluedIn.Contrib.Rules.Actions;
@@ -10,6 +11,7 @@ namespace CluedIn.Contrib.Tests.Rules.Actions;
 
 public class EnrichTest
 {
+    private readonly string _apiKey = Guid.NewGuid().ToString();
     private readonly ProcessingContext _context = Substitute.For<ProcessingContext>();
 
     private static IEntityMetadataPart GetEntityMetadataPart()
@@ -155,6 +157,9 @@ public class EnrichTest
     public void Run_HappyPath_Enriches()
     {
         // Arrange
+        Environment.SetEnvironmentVariable(
+            "CLUEDIN_RULE_ACTION_API_KEY",
+            _apiKey);
         var httpClient = new HttpClient(
             new MockHttpMessageHandler(SendAsync));
         var enrich = new Enrich(httpClient)
@@ -179,6 +184,9 @@ public class EnrichTest
     public void Run_HappyPathPreview_Enriches()
     {
         // Arrange
+        Environment.SetEnvironmentVariable(
+            "CLUEDIN_RULE_ACTION_API_KEY",
+            _apiKey);
         var httpClient = new HttpClient(
             new MockHttpMessageHandler(SendAsync));
         var enrich = new Enrich(httpClient)
@@ -199,9 +207,46 @@ public class EnrichTest
         Assert.Equal("preview_enriched_b", entityMetadataPart.Properties["enrich.b"]);
     }
 
-    private static async Task<HttpResponseMessage> SendAsync(HttpRequestMessage message, CancellationToken token)
+    [Fact]
+    public void Run_NoApiKey_Forbidden()
     {
-        if (message.Content is not FormUrlEncodedContent formUrlEncodedContent)
+        // Arrange
+        Environment.SetEnvironmentVariable(
+            "CLUEDIN_RULE_ACTION_API_KEY",
+            null);
+        var httpClient = new HttpClient(
+            new MockHttpMessageHandler(SendAsync));
+        var enrich = new Enrich(httpClient)
+        {
+            UrlFieldValue = "http://localhost:8888",
+            PayloadFieldValue = "test.a,test.c",
+            VocabularyPrefixFieldValue = "enrich"
+        };
+        var entityMetadataPart = GetEntityMetadataPart();
+        // Act
+        var ruleActionResult = enrich.Run(
+            _context,
+            entityMetadataPart,
+            false);
+        // Assert
+        Assert.True(ruleActionResult.IsSuccess);
+        Assert.Equal(
+            "Forbidden",
+            entityMetadataPart.Properties["enrich.status"]);
+    }
+
+    private async Task<HttpResponseMessage> SendAsync(HttpRequestMessage message, CancellationToken token)
+    {
+        if (!message.Headers.TryGetValues("X-ApiKey", out var apiKeys)
+            || !string.Equals(apiKeys.First(), _apiKey, StringComparison.Ordinal))
+        {
+            return new HttpResponseMessage
+            {
+                Content = new StringContent("{ \"status\": \"Forbidden\" }"), StatusCode = HttpStatusCode.Forbidden
+            };
+        }
+
+        if (message.Content is not FormUrlEncodedContent)
         {
             return new HttpResponseMessage { Content = new StringContent("nope") };
         }
