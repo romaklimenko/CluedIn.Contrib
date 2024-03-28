@@ -38,16 +38,12 @@ public class EnrichTest
         var enrich = new Enrich
         {
             // Act
-            UrlFieldValue = "A",
-            PayloadFieldValue = "B",
-            VocabularyPrefixFieldValue = "C",
-            CacheExpirationTimeInMinutesFieldValue = "D"
+            UrlFieldValue = "A", PayloadFieldValue = "B", VocabularyPrefixFieldValue = "C"
         };
         // Assert
         Assert.Equal("A", enrich.UrlFieldValue);
         Assert.Equal("B", enrich.PayloadFieldValue);
         Assert.Equal("C", enrich.VocabularyPrefixFieldValue);
-        Assert.Equal("D", enrich.CacheExpirationTimeInMinutesFieldValue);
     }
 
     [Fact]
@@ -102,46 +98,6 @@ public class EnrichTest
     }
 
     [Fact]
-    public void Run_NoCacheExpirationTimeInMinutesFieldValue_ReturnsFailure()
-    {
-        // Arrange
-        var enrich = new Enrich { UrlFieldValue = "A", PayloadFieldValue = "B", VocabularyPrefixFieldValue = "C" };
-        // Act
-        var ruleActionResult = enrich.Run(
-            _context,
-            GetEntityMetadataPart(),
-            false);
-        // Assert
-        Assert.False(ruleActionResult.IsSuccess);
-        Assert.Equal(
-            $"The field {nameof(Enrich.CacheExpirationTimeInMinutesFieldValue)} cannot be empty.",
-            ruleActionResult.Messages.Single());
-    }
-
-    [Fact]
-    public void Run_CantCacheExpirationTimeInMinutesFieldValue_ReturnsFailure()
-    {
-        // Arrange
-        var enrich = new Enrich
-        {
-            UrlFieldValue = "A",
-            PayloadFieldValue = "B",
-            VocabularyPrefixFieldValue = "C",
-            CacheExpirationTimeInMinutesFieldValue = "D"
-        };
-        // Act
-        var ruleActionResult = enrich.Run(
-            _context,
-            GetEntityMetadataPart(),
-            false);
-        // Assert
-        Assert.False(ruleActionResult.IsSuccess);
-        Assert.Equal(
-            $"Can't parse {enrich.CacheExpirationTimeInMinutesFieldValue}.",
-            ruleActionResult.Messages.Single());
-    }
-
-    [Fact]
     public void Run_ReturnsFailure()
     {
         // Arrange
@@ -154,8 +110,7 @@ public class EnrichTest
         {
             UrlFieldValue = "http://localhost:8888",
             PayloadFieldValue = "test.a,test.c",
-            VocabularyPrefixFieldValue = "enrich",
-            CacheExpirationTimeInMinutesFieldValue = "1"
+            VocabularyPrefixFieldValue = "enrich"
         };
         // Act
         var ruleActiomResult = enrich.Run(
@@ -182,8 +137,7 @@ public class EnrichTest
         {
             UrlFieldValue = "http://localhost:8888",
             PayloadFieldValue = "test.a,test.c",
-            VocabularyPrefixFieldValue = "enrich",
-            CacheExpirationTimeInMinutesFieldValue = "1"
+            VocabularyPrefixFieldValue = "enrich"
         };
         // Act
         var ruleActionResult = enrich.Run(
@@ -207,8 +161,7 @@ public class EnrichTest
         {
             UrlFieldValue = "http://localhost:8888",
             PayloadFieldValue = "test.a,test.c",
-            VocabularyPrefixFieldValue = "enrich",
-            CacheExpirationTimeInMinutesFieldValue = "1"
+            VocabularyPrefixFieldValue = "enrich"
         };
         var entityMetadataPart = GetEntityMetadataPart();
         // Act
@@ -232,8 +185,7 @@ public class EnrichTest
         {
             UrlFieldValue = "http://localhost:8888",
             PayloadFieldValue = "test.a,test.c",
-            VocabularyPrefixFieldValue = "enrich",
-            CacheExpirationTimeInMinutesFieldValue = "1"
+            VocabularyPrefixFieldValue = "enrich"
         };
         var entityMetadataPart = GetEntityMetadataPart();
         // Act
