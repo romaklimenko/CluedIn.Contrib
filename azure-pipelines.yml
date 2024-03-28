@@ -49,3 +49,13 @@ steps:
     inputs:
       PathtoPublish: $(Build.ArtifactStagingDirectory)
       ArtifactName: ArtifactStagingDirectory
+    displayName: "Publish Build Artifacts"
+
+  - task: NuGetAuthenticate@1
+    displayName: "NuGet Authenticate"
+
+  - task: NuGetCommand@2
+    displayName: "NuGet Push"
+    inputs:
+      command: push
+      publishVstsFeed: "CluedIn"
