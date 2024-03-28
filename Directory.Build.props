@@ -20,7 +20,7 @@
     <Product>$(Company)</Product>
     <Description>$(MSBuildProjectName) library.</Description>
     <AssemblyTitle>$(MSBuildProjectName)</AssemblyTitle>
-    <AssemblyName>$(Product).$(AssemblyTitle)</AssemblyName>
+    <AssemblyName>$(AssemblyTitle)</AssemblyName>
     <RootNamespace>$(MSBuildProjectName)</RootNamespace>
   </PropertyGroup>
 
