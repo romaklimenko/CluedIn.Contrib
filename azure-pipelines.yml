@@ -12,14 +12,18 @@ pr:
       - develop
 
 variables:
-  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
-    versionSuffix: ".$(build.buildnumber)"
-  ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}:
-    versionSuffix: "dev.$(build.buildnumber)"
-  ${{ elseif startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
-    versionSuffix: "pr$(System.PullRequest.PullRequestNumber).$(build.buildnumber)"
-  ${{ else }}:
-    versionSuffix: "feature.$(build.buildnumber)"
+  - ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
+      - name: versionSuffix
+        value: "$(build.buildnumber)"
+  - ${{ if and(eq(variables['Build.SourceBranchName'], 'develop'), ne(variables['Build.SourceBranch'], 'refs/heads/master')) }}:
+      - name: versionSuffix
+        value: "dev.$(build.buildnumber)"
+  - ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
+      - name: versionSuffix
+        value: "pr$(System.PullRequest.PullRequestNumber).$(build.buildnumber)"
+  - ${{ if and(ne(variables['Build.SourceBranchName'], 'master'), ne(variables['Build.SourceBranchName'], 'develop'), not(startsWith(variables['Build.SourceBranch'], 'refs/pull/'))) }}:
+      - name: versionSuffix
+        value: "feature.$(build.buildnumber)"
 
 steps:
   - task: DotNetCoreCLI@2
