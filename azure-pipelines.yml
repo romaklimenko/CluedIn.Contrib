@@ -23,7 +23,7 @@ pr:
 
 variables:
   ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
-    versionSuffix: ".$(build.buildnumber)"
+    versionSuffix: ""
   ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}:
     versionSuffix: "dev.$(build.buildnumber)"
   ${{ elseif startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
