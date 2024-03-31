@@ -4,17 +4,27 @@ trigger:
     include:
       - master
       - develop
+  paths:
+    include:
+      - "*"
+    exclude:
+      - "**/*.md"
 
 pr:
   branches:
     include:
       - master
       - develop
+  paths:
+    include:
+      - "*"
+    exclude:
+      - "**/*.md"
 
 variables:
   - ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
       - name: versionSuffix
-        value: "$(build.buildnumber)"
+        value: ""
   - ${{ if and(eq(variables['Build.SourceBranchName'], 'develop'), ne(variables['Build.SourceBranch'], 'refs/heads/master')) }}:
       - name: versionSuffix
         value: "dev.$(build.buildnumber)"
