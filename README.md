@@ -10,7 +10,5 @@ CluedIn Contrib is a collection of features that are not part of the core CluedI
 ## Docs
 
 - [Get started](https://github.com/CluedIn-io/CluedIn.Contrib/wiki/Get-started)
-
-### Rule Actions
-
-- [Enrich](https://github.com/CluedIn-io/CluedIn.Contrib/wiki/Rule-Actions#enrich)
+- Rule Actions:
+    - [Enrich](https://github.com/CluedIn-io/CluedIn.Contrib/wiki/Rule-Action:-Enrich)

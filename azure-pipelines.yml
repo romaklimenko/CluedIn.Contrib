@@ -5,10 +5,8 @@ trigger:
       - master
       - develop
   paths:
-    include:
-      - "*"
     exclude:
-      - README.md
+      - "**/*.md"
 
 pr:
   branches:
@@ -16,10 +14,14 @@ pr:
       - master
       - develop
   paths:
-    include:
-      - "*"
     exclude:
-      - README.md
+      - "**/*.md"
+
+parameters:
+  - name: publishPackages
+    displayName: 'Publish Packages'
+    type: boolean
+    default: false
 
 variables:
   - ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
@@ -42,34 +44,36 @@ steps:
       command: build
 
   - task: DotNetCoreCLI@2
-    displayName: Test
+    displayName: "Test"
     inputs:
       command: test
       arguments: '--no-build --collect:"XPlat Code Coverage"'
 
   - task: DotNetCoreCLI@2
-    displayName: Pack
+    displayName: "Pack"
     inputs:
       command: pack
       arguments: "-o $(Build.ArtifactStagingDirectory) --no-build"
 
   - task: PublishCodeCoverageResults@2
+    displayName: "Publish Coverage Report"
     inputs:
       summaryFileLocation: "$(Agent.TempDirectory)/**/coverage.cobertura.xml"
       failIfCoverageEmpty: true
-    displayName: "Publish Coverage Report"
 
   - task: PublishBuildArtifacts@1
+    displayName: "Publish Build Artifacts"
     inputs:
       PathtoPublish: $(Build.ArtifactStagingDirectory)
       ArtifactName: ArtifactStagingDirectory
-    displayName: "Publish Build Artifacts"
 
   - task: NuGetAuthenticate@1
     displayName: "NuGet Authenticate"
+    condition: and(succeeded(), ${{parameters.publishPackages}})
 
   - task: NuGetCommand@2
     displayName: "NuGet Push"
+    condition: and(succeeded(), ${{parameters.publishPackages}})
     inputs:
       command: push
       publishVstsFeed: "CluedIn"
