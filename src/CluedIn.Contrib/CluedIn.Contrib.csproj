@@ -8,7 +8,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="CluedIn.Rules"/>
+    <PackageReference Include="CluedIn.Rules" Version="4.0.0"/>
   </ItemGroup>
 
 </Project>
