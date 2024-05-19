@@ -18,7 +18,7 @@ public class OriginsMergeDataPartsPostProcessor : IMergeDataPartsPostProcessor
         entityProcessedData.Properties["system.origins"] = string.Join(
             ",",
             entityProcessedData.Codes
-                .Where(x => !x.Origin.ToString().Contains("CluedIn", StringComparison.InvariantCultureIgnoreCase))
+                .Where(x => !x.Origin.Code.Equals("CluedIn", StringComparison.InvariantCultureIgnoreCase))
                 .Select(x => x.Origin)
                 .Distinct()
                 .OrderBy(x => x));

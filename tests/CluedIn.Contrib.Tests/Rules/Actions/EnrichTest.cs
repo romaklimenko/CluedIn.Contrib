@@ -115,15 +115,15 @@ public class EnrichTest
             VocabularyPrefixFieldValue = "enrich"
         };
         // Act
-        var ruleActiomResult = enrich.Run(
+        var ruleActionResult = enrich.Run(
             _context,
             GetEntityMetadataPart(),
             false);
         // Assert
-        Assert.False(ruleActiomResult.IsSuccess);
+        Assert.False(ruleActionResult.IsSuccess);
         Assert.Equal(
             exceptionMessage,
-            ruleActiomResult.Messages.Single());
+            ruleActionResult.Messages.Single());
     }
 
     [Fact]
