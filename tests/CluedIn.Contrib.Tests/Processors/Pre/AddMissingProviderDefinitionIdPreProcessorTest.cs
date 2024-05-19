@@ -45,11 +45,37 @@ public class AddMissingProviderDefinitionIdPreProcessorTest
         // Arrange
         var processor = new AddMissingProviderDefinitionIdPreProcessor();
         var expectedOriginProviderDefinitionId = "Dynamics365".ToGuid();
-        var dataPart = new DataPart { OriginEntityCode = new EntityCode("/Person", "Dynamics365(Contact)", 1) };
+        var dataPart = new DataPart
+        {
+            EntityData = { OriginEntityCode = new EntityCode("/Person", "Dynamics365(Contact)", 1) }
+        };
         // Act
         processor.Process(_executionContext, null!, dataPart);
         // Assert
         Assert.Equal(expectedOriginProviderDefinitionId, dataPart.OriginProviderDefinitionId);
         Assert.Equal(expectedOriginProviderDefinitionId, dataPart.EntityData.ProviderDefinitionId);
+    }
+
+    [Fact]
+    public void Process_NoCodes_DoNothing()
+    {
+        // Arrange
+        var processor = new AddMissingProviderDefinitionIdPreProcessor();
+
+        var dataPart = new DataPart();
+        // Act
+        processor.Process(_executionContext, null!, dataPart);
+        // Assert
+    }
+
+    [Fact]
+    public void Process_DataPartIsNull_DoNothing()
+    {
+        // Arrange
+        var processor = new AddMissingProviderDefinitionIdPreProcessor();
+
+        // Act
+        processor.Process(_executionContext, null!, null);
+        // Assert
     }
 }
