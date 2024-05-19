@@ -3,9 +3,9 @@
     <_CluedIn>4.0.0</_CluedIn>
   </PropertyGroup>
 
-  <!-- <ItemGroup Label="Solution Dependencies">
+  <ItemGroup Label="Solution Dependencies">
     <PackageReference Include="CluedIn.Rules" Version="$(_CluedIn)"/>
-  </ItemGroup> -->
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.1.0"/>

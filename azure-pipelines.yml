@@ -38,6 +38,11 @@ variables:
         value: "feature.$(build.buildnumber)"
 
 steps:
+  - task: UseDotNet@2
+    displayName: "Use global.json"
+    inputs:
+      useGlobalJson: true
+
   - task: DotNetCoreCLI@2
     displayName: "Build"
     inputs:
