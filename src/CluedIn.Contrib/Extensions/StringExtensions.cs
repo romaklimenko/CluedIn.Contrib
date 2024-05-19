@@ -1,11 +1,14 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CluedIn.Contrib.Extensions;
 
 public static class StringExtensions
 {
     private static readonly Guid s_namespaceId = new("400d1d0c-f4e3-498f-bc18-cb3377a51104");
+
+    private static readonly IMemoryCache s_memoryCache = new MemoryCache(new MemoryCacheOptions { SizeLimit = 1024 });
 
     /// <summary>
     ///     Generates a deterministic GUID using a namespace GUID and the input string.
@@ -23,6 +26,13 @@ public static class StringExtensions
         if (string.IsNullOrWhiteSpace(input))
         {
             throw new ArgumentException(null, nameof(input));
+        }
+
+        var key = $"{namespaceId}|{input}";
+
+        if (s_memoryCache.TryGetValue(key, out Guid result))
+        {
+            return result;
         }
 
         // Convert the namespace GUID to a byte array and ensure it's in big-endian format
@@ -53,7 +63,12 @@ public static class StringExtensions
 
         SwapByteOrder(guidBytes);
 
-        return new Guid(guidBytes);
+        return s_memoryCache.Set(
+            key,
+            new Guid(guidBytes),
+            new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromHours(1))
+                .SetSize(1));
 
         // Swaps the byte order of the GUID to ensure big-endian format.
         // https://en.wikipedia.org/wiki/Endianness
