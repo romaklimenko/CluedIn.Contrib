@@ -1,4 +1,5 @@
-﻿using CluedIn.Core.Data.Parts;
+﻿using CluedIn.Contrib.Extensions;
+using CluedIn.Core.Data.Parts;
 using CluedIn.Core.Processing;
 using CluedIn.Processing;
 using ExecutionContext = CluedIn.Core.ExecutionContext;
@@ -9,7 +10,7 @@ public class OriginsMergeDataPartsPostProcessor : IMergeDataPartsPostProcessor
 {
     public bool IsEnabled(ExecutionContext context)
     {
-        return true;
+        return this.IsEnabled();
     }
 
     public void Process(ProcessingContext context, IProcessedEntityMetadataPart entityProcessedData,

@@ -11,7 +11,7 @@ public class AddMissingProviderDefinitionIdPreProcessor : IPreProcessor
 {
     public bool Accepts(ExecutionContext context, IEnumerable<IEntityCode> codes)
     {
-        return true;
+        return this.IsEnabled();
     }
 
     public void Process(ExecutionContext context, IEntityMetadataPart metadata, IDataPart? data)
