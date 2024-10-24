@@ -7,7 +7,7 @@ using ExecutionContext = CluedIn.Core.ExecutionContext;
 
 namespace CluedIn.Contrib.Tests.Processors.Pre;
 
-public class AddMissingProviderDefinitionIdPreProcessorTest
+public class AddMissingProviderDefinitionIdPreProcessorTest : IClassFixture<EnvironmentVariablesFixture>
 {
     private readonly ExecutionContext _executionContext = Substitute.For<ExecutionContext>();
 

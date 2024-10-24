@@ -1,57 +1,94 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using CluedIn.Contrib.Extensions;
-using CluedIn.Contrib.Processors.Post.MergeDataParts;
-using CluedIn.Contrib.Processors.Pre;
+﻿using CluedIn.Contrib.Extensions;
+using CluedIn.Core.Data;
+using CluedIn.Core.Data.Parts;
+using CluedIn.Core.Processing;
+using CluedIn.Processing;
+using CluedIn.Processing.Processors.PreProcessing;
+using ExecutionContext = CluedIn.Core.ExecutionContext;
 
 namespace CluedIn.Contrib.Tests.Extensions;
 
-public class ProcessorExtensionsTest
+internal class FooPreProcessor : IPreProcessor
 {
-    public ProcessorExtensionsTest()
+    public bool Accepts(ExecutionContext context, IEnumerable<IEntityCode> codes)
     {
-        Environment.SetEnvironmentVariable(PreProcessorEnvironmentVariableName, "true");
-        Environment.SetEnvironmentVariable(MergeDataPartsPostProcessorEnvironmentVariableName, "true");
+        throw new NotImplementedException();
     }
 
-    private static string PreProcessorEnvironmentVariableName =>
-        $"CluedIn_AppSettings__{nameof(AddMissingProviderDefinitionIdPreProcessor)}_Enabled";
+    public void Process(ExecutionContext context, IEntityMetadataPart metadata, IDataPart data)
+    {
+        throw new NotImplementedException();
+    }
+}
 
-    private static string MergeDataPartsPostProcessorEnvironmentVariableName =>
-        $"CluedIn_AppSettings__{nameof(OriginsMergeDataPartsPostProcessor)}_Enabled";
+internal class BarPreProcessor : IPreProcessor
+{
+    public bool Accepts(ExecutionContext context, IEnumerable<IEntityCode> codes)
+    {
+        throw new NotImplementedException();
+    }
 
-    [Fact(Skip =
-        "The problem is that we can't clear cache from ConfigurationManagerEx, " +
-        "so no matter what we set, it will always return the same value.")]
-    [SuppressMessage("Usage", "xUnit1004:Test methods should not be skipped")]
+    public void Process(ExecutionContext context, IEntityMetadataPart metadata, IDataPart data)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+internal class FooMergeDataPartsPostProcessor : IMergeDataPartsPostProcessor
+{
+    public bool IsEnabled(ExecutionContext context)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Process(ProcessingContext context, IProcessedEntityMetadataPart entityProcessedData,
+        IEnumerable<IDataPart> orderedDataParts)
+    {
+        throw new NotImplementedException();
+    }
+
+    public int Priority => 1;
+}
+
+internal class BarMergeDataPartsPostProcessor : IMergeDataPartsPostProcessor
+{
+    public bool IsEnabled(ExecutionContext context)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Process(ProcessingContext context, IProcessedEntityMetadataPart entityProcessedData,
+        IEnumerable<IDataPart> orderedDataParts)
+    {
+        throw new NotImplementedException();
+    }
+
+    public int Priority => 1;
+}
+
+public class ProcessorExtensionsTest : IClassFixture<EnvironmentVariablesFixture>
+{
+    [Fact]
+    public void IsEnabled_True()
+    {
+        // Arrange
+        var preProcessor = new FooPreProcessor();
+        var mergeDataPartsPostProcessor = new FooMergeDataPartsPostProcessor();
+        // Act
+        // Assert
+        Assert.True(preProcessor.IsEnabled());
+        Assert.True(mergeDataPartsPostProcessor.IsEnabled());
+    }
+
+    [Fact]
     public void IsEnabled_False()
     {
         // Arrange
-        var obj = new AddMissingProviderDefinitionIdPreProcessor();
+        var preProcessor = new BarPreProcessor();
+        var mergeDataPartsPostProcessor = new BarMergeDataPartsPostProcessor();
         // Act
-        var actual = obj.IsEnabled();
         // Assert
-        Assert.False(actual);
-    }
-
-    [Fact]
-    public void IPreProcessorIsEnabled_True()
-    {
-        // Arrange
-        var processor = new AddMissingProviderDefinitionIdPreProcessor();
-        // Act
-        var actual = processor.IsEnabled();
-        // Assert
-        Assert.True(actual);
-    }
-
-    [Fact]
-    public void IMergeDataPartsPostProcessorIsEnabled_True()
-    {
-        // Arrange
-        var processor = new OriginsMergeDataPartsPostProcessor();
-        // Act
-        var actual = processor.IsEnabled();
-        // Assert
-        Assert.True(actual);
+        Assert.False(preProcessor.IsEnabled());
+        Assert.False(mergeDataPartsPostProcessor.IsEnabled());
     }
 }

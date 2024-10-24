@@ -7,7 +7,7 @@ using ExecutionContext = CluedIn.Core.ExecutionContext;
 
 namespace CluedIn.Contrib.Tests.Processors.Post.MergeDataParts;
 
-public class OriginsMergeDataPartsPostProcessorTest
+public class OriginsMergeDataPartsPostProcessorTest : IClassFixture<EnvironmentVariablesFixture>
 {
     private readonly ExecutionContext _executionContext = Substitute.For<ExecutionContext>();
     private readonly ProcessingContext _processingContext = Substitute.For<ProcessingContext>();
