@@ -41,4 +41,17 @@ public class StringExtensionsTest
         var exception = Assert.Throws<ArgumentException>(() => input.ToGuid());
         Assert.Equal("input", exception.ParamName);
     }
+
+    [Theory]
+    [InlineData("CluedIn", 3, "Clu")]
+    [InlineData("CluedIn", 4, "Clue")]
+    [InlineData("CluedIn", 255, "CluedIn")]
+    public void Truncate_Truncates(string input, int length, string expected)
+    {
+        // Arrange
+        // Act
+        var actual = input.Truncate(length);
+        // Assert
+        Assert.Equal(expected, actual);
+    }
 }
