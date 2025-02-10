@@ -76,17 +76,17 @@ public class AddSequenceNumberPreProcessor : IPreProcessor
         return sequenceNumber;
     }
 
-    private static void InsertSequenceNumber(SqlConnection connection, string entityCodeTruncated, Guid entityCodeHash)
+    private static void InsertSequenceNumber(SqlConnection connection, string truncatedEntityCode, Guid entityCodeHash)
     {
-        using var insertCmd = new SqlCommand(
+        using var insertCommand = new SqlCommand(
             "INSERT INTO SequenceNumbers (EntityCode, EntityCodeHash) VALUES (@EntityCode, @EntityCodeHash)",
             connection);
-        insertCmd.Parameters.AddWithValue("@EntityCode", entityCodeTruncated);
-        insertCmd.Parameters.AddWithValue("@EntityCodeHash", entityCodeHash);
+        insertCommand.Parameters.AddWithValue("@EntityCode", truncatedEntityCode);
+        insertCommand.Parameters.AddWithValue("@EntityCodeHash", entityCodeHash);
 
         try
         {
-            insertCmd.ExecuteNonQuery();
+            insertCommand.ExecuteNonQuery();
         }
         // 2601: Indicates a unique constraint violation.
         // 2627: Indicates a primary key violation.
@@ -101,13 +101,13 @@ public class AddSequenceNumberPreProcessor : IPreProcessor
 
     private static int SelectSequenceNumber(SqlConnection connection, Guid entityCodeHash)
     {
-        using var selectCmd =
+        using var selectCommand =
             new SqlCommand(
                 "SELECT SequenceNumber FROM SequenceNumbers WHERE EntityCodeHash = @EntityCodeHash",
                 connection);
-        selectCmd.Parameters.AddWithValue("@EntityCodeHash", entityCodeHash);
+        selectCommand.Parameters.AddWithValue("@EntityCodeHash", entityCodeHash);
 
-        var result = selectCmd.ExecuteScalar();
+        var result = selectCommand.ExecuteScalar();
         return result != null ? Convert.ToInt32(result, CultureInfo.InvariantCulture) : 0;
     }
 
@@ -130,10 +130,8 @@ public class AddSequenceNumberPreProcessor : IPreProcessor
             CONSTRAINT [PK_SequenceNumbers] PRIMARY KEY CLUSTERED ([SequenceNumber] ASC)
         );
     END";
-            using (var cmd = new SqlCommand(createTableSql, connection))
-            {
-                cmd.ExecuteNonQuery();
-            }
+            using var createTableCommand = new SqlCommand(createTableSql, connection);
+            createTableCommand.ExecuteNonQuery();
 
             const string createIndexSql = @"
     IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'UX_SequenceNumbers_EntityCodeHash' AND object_id = OBJECT_ID(N'[dbo].[SequenceNumbers]'))
@@ -141,10 +139,8 @@ public class AddSequenceNumberPreProcessor : IPreProcessor
         CREATE UNIQUE NONCLUSTERED INDEX [UX_SequenceNumbers_EntityCodeHash]
         ON [dbo].[SequenceNumbers]([EntityCodeHash] ASC);
     END";
-            using (var cmd = new SqlCommand(createIndexSql, connection))
-            {
-                cmd.ExecuteNonQuery();
-            }
+            using var createIndexCommand = new SqlCommand(createIndexSql, connection);
+            createIndexCommand.ExecuteNonQuery();
 
             s_tableCreated = true;
         }
