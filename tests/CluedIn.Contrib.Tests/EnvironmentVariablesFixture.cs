@@ -16,6 +16,9 @@ public class EnvironmentVariablesFixture
             $"CluedIn_AppSettings__{nameof(AddMissingProviderDefinitionIdPreProcessor)}_Enabled", "true");
         Environment.SetEnvironmentVariable($"CluedIn_AppSettings__{nameof(AddSequenceNumberPreProcessor)}_Enabled",
             "true");
+        Environment.SetEnvironmentVariable(
+            $"CluedIn_AppSettings__{nameof(LookupValidationMergeDataPartsPostProcessor)}_Enabled",
+            "true");
         Environment.SetEnvironmentVariable($"CluedIn_AppSettings__{nameof(OriginsMergeDataPartsPostProcessor)}_Enabled",
             "true");
     }
