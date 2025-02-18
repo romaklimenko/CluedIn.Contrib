@@ -50,7 +50,7 @@ public class OriginsMergeDataPartsPostProcessorTest : IClassFixture<EnvironmentV
         // Arrange
         var processor = new OriginsMergeDataPartsPostProcessor();
         IProcessedEntityMetadataPart entityProcessedData = new ProcessedEntityMetadataPart();
-        entityProcessedData.Codes.Add(new EntityCode("/Person", "Salesforce", 1));
+        entityProcessedData.Codes.Add(EntityCode.FromKey("/Person#Salesforce:1"));
         // Act
         processor.Process(_processingContext, entityProcessedData, Enumerable.Empty<IDataPart>());
         // Assert
@@ -63,8 +63,8 @@ public class OriginsMergeDataPartsPostProcessorTest : IClassFixture<EnvironmentV
         // Arrange
         var processor = new OriginsMergeDataPartsPostProcessor();
         IProcessedEntityMetadataPart entityProcessedData = new ProcessedEntityMetadataPart();
-        entityProcessedData.Codes.Add(new EntityCode("/Person", "Salesforce", 1));
-        entityProcessedData.Codes.Add(new EntityCode("/Person", "Salesforce", 2));
+        entityProcessedData.Codes.Add(EntityCode.FromKey("/Person#Salesforce:1"));
+        entityProcessedData.Codes.Add(EntityCode.FromKey("/Person#Salesforce:2"));
         // Act
         processor.Process(_processingContext, entityProcessedData, Enumerable.Empty<IDataPart>());
         // Assert
@@ -77,8 +77,8 @@ public class OriginsMergeDataPartsPostProcessorTest : IClassFixture<EnvironmentV
         // Arrange
         var processor = new OriginsMergeDataPartsPostProcessor();
         IProcessedEntityMetadataPart entityProcessedData = new ProcessedEntityMetadataPart();
-        entityProcessedData.Codes.Add(new EntityCode("/Person", "Salesforce", 1));
-        entityProcessedData.Codes.Add(new EntityCode("/Person", "Dynamics365", 2));
+        entityProcessedData.Codes.Add(EntityCode.FromKey("/Person#Salesforce:1"));
+        entityProcessedData.Codes.Add(EntityCode.FromKey("/Person#Dynamics365:2"));
         // Act
         processor.Process(_processingContext, entityProcessedData, Enumerable.Empty<IDataPart>());
         // Assert
@@ -88,12 +88,16 @@ public class OriginsMergeDataPartsPostProcessorTest : IClassFixture<EnvironmentV
     [Fact]
     public void ThreeCodesTwoOriginsOneCluedIn()
     {
+        var code = EntityCode.FromKey(
+            "/Order#File Data Source:CluedIn(hash-sha1):af8bcfec5476d65c06586f14ed7763552474687b");
+
         // Arrange
         var processor = new OriginsMergeDataPartsPostProcessor();
         IProcessedEntityMetadataPart entityProcessedData = new ProcessedEntityMetadataPart();
-        entityProcessedData.Codes.Add(new EntityCode("/Person", "Salesforce", 1));
-        entityProcessedData.Codes.Add(new EntityCode("/Person", "Dynamics365", 2));
-        entityProcessedData.Codes.Add(new EntityCode("/Person", "CluedIn(name)", "Bob"));
+        entityProcessedData.Codes.Add(EntityCode.FromKey("/Person#Salesforce:1"));
+        entityProcessedData.Codes.Add(EntityCode.FromKey("/Person#Dynamics365:2"));
+        entityProcessedData.Codes.Add(EntityCode.FromKey("/Person#CluedIn(name):Bob"));
+        entityProcessedData.Codes.Add(EntityCode.FromKey("/Person#File Data Source:CluedIn(hash-sha1):Bob"));
         // Act
         processor.Process(_processingContext, entityProcessedData, Enumerable.Empty<IDataPart>());
         // Assert

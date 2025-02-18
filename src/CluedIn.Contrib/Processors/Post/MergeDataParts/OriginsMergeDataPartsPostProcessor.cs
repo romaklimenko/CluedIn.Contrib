@@ -19,7 +19,12 @@ public class OriginsMergeDataPartsPostProcessor : IMergeDataPartsPostProcessor
         entityProcessedData.Properties["system.origins"] = string.Join(
             ",",
             entityProcessedData.Codes
-                .Where(x => !x.Origin.Code.Equals("CluedIn", StringComparison.InvariantCultureIgnoreCase))
+                .Where(x => !new[]
+                {
+                    // smells bad but: https://github.com/CluedIn-io/CluedIn/tree/develop/Code/Providers/System
+                    "CluedIn", "File Data Source", "Endpoint Data Source", "Database Data Source",
+                    "Excel Plugin Source", "Landing Zone Data Source", "Manual Hierarchy Builder Source"
+                }.Any(s => x.Origin.Code.Contains(s, StringComparison.InvariantCultureIgnoreCase)))
                 .Select(x => x.Origin)
                 .Distinct()
                 .OrderBy(x => x));
