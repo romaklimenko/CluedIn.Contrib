@@ -9,16 +9,16 @@ using Serilog;
 
 namespace CluedIn.Contrib.Rules.Actions;
 
-public class Enrich : BaseRuleAction, IScopedRuleAction
+public class EnrichRuleAction : BaseRuleAction, IScopedRuleAction
 {
     private const string ApiKeyEnvironmentVariableName = "CLUEDIN_RULE_ACTION_API_KEY";
     private readonly HttpClient _httpClient;
 
-    public Enrich() : this(new HttpClient())
+    public EnrichRuleAction() : this(new HttpClient())
     {
     }
 
-    public Enrich(HttpClient httpClient)
+    public EnrichRuleAction(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }

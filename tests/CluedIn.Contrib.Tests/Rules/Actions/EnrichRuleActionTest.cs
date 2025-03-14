@@ -9,7 +9,7 @@ using NSubstitute;
 
 namespace CluedIn.Contrib.Tests.Rules.Actions;
 
-public class EnrichTest
+public class EnrichRuleActionTest
 {
     private readonly string _apiKey = Guid.NewGuid().ToString();
     private readonly ProcessingContext _context = Substitute.For<ProcessingContext>();
@@ -24,7 +24,7 @@ public class EnrichTest
     {
         // Arrange
         // Act
-        var enrich = new Enrich();
+        var enrich = new EnrichRuleAction();
         // Assert
         Assert.Equal("Enrich", enrich.Name);
         Assert.True(enrich.SupportsPreview);
@@ -37,7 +37,7 @@ public class EnrichTest
     public void Properties_GetAndSet()
     {
         // Arrange
-        var enrich = new Enrich
+        var enrich = new EnrichRuleAction
         {
             // Act
             UrlFieldValue = "A", PayloadFieldValue = "B", VocabularyPrefixFieldValue = "C"
@@ -52,7 +52,7 @@ public class EnrichTest
     public void Run_NoUrlFieldValue_ReturnsFailure()
     {
         // Arrange
-        var enrich = new Enrich();
+        var enrich = new EnrichRuleAction();
         // Act
         var ruleActionResult = enrich.Run(
             _context,
@@ -61,7 +61,7 @@ public class EnrichTest
         // Assert
         Assert.False(ruleActionResult.IsSuccess);
         Assert.Equal(
-            $"The field {nameof(Enrich.UrlFieldValue)} cannot be empty.",
+            $"The field {nameof(EnrichRuleAction.UrlFieldValue)} cannot be empty.",
             ruleActionResult.Messages.Single());
     }
 
@@ -69,7 +69,7 @@ public class EnrichTest
     public void Run_NoPayloadFieldValue_ReturnsFailure()
     {
         // Arrange
-        var enrich = new Enrich { UrlFieldValue = "A" };
+        var enrich = new EnrichRuleAction { UrlFieldValue = "A" };
         // Act
         var ruleActionResult = enrich.Run(
             _context,
@@ -78,7 +78,7 @@ public class EnrichTest
         // Assert
         Assert.False(ruleActionResult.IsSuccess);
         Assert.Equal(
-            $"The field {nameof(Enrich.PayloadFieldValue)} cannot be empty.",
+            $"The field {nameof(EnrichRuleAction.PayloadFieldValue)} cannot be empty.",
             ruleActionResult.Messages.Single());
     }
 
@@ -86,7 +86,7 @@ public class EnrichTest
     public void Run_NoVocabularyPrefixFieldValue_ReturnsFailure()
     {
         // Arrange
-        var enrich = new Enrich { UrlFieldValue = "A", PayloadFieldValue = "B" };
+        var enrich = new EnrichRuleAction { UrlFieldValue = "A", PayloadFieldValue = "B" };
         // Act
         var ruleActionResult = enrich.Run(
             _context,
@@ -95,7 +95,7 @@ public class EnrichTest
         // Assert
         Assert.False(ruleActionResult.IsSuccess);
         Assert.Equal(
-            $"The field {nameof(Enrich.VocabularyPrefixFieldValue)} cannot be empty.",
+            $"The field {nameof(EnrichRuleAction.VocabularyPrefixFieldValue)} cannot be empty.",
             ruleActionResult.Messages.Single());
     }
 
@@ -108,7 +108,7 @@ public class EnrichTest
             new MockHttpMessageHandler(
                 (_, _) =>
                     throw new NotImplementedException(exceptionMessage)));
-        var enrich = new Enrich(httpClient)
+        var enrich = new EnrichRuleAction(httpClient)
         {
             UrlFieldValue = "http://localhost:8888",
             PayloadFieldValue = "test.a,test.c",
@@ -135,7 +135,7 @@ public class EnrichTest
                 (_, _) =>
                     Task.FromResult(
                         new HttpResponseMessage { Content = new StringContent("not a JSON") })));
-        var enrich = new Enrich(httpClient)
+        var enrich = new EnrichRuleAction(httpClient)
         {
             UrlFieldValue = "http://localhost:8888",
             PayloadFieldValue = "test.a,test.c",
@@ -162,7 +162,7 @@ public class EnrichTest
             _apiKey);
         var httpClient = new HttpClient(
             new MockHttpMessageHandler(SendAsync));
-        var enrich = new Enrich(httpClient)
+        var enrich = new EnrichRuleAction(httpClient)
         {
             UrlFieldValue = "http://localhost:8888",
             PayloadFieldValue = "test.a,test.c",
@@ -189,7 +189,7 @@ public class EnrichTest
             _apiKey);
         var httpClient = new HttpClient(
             new MockHttpMessageHandler(SendAsync));
-        var enrich = new Enrich(httpClient)
+        var enrich = new EnrichRuleAction(httpClient)
         {
             UrlFieldValue = "http://localhost:8888",
             PayloadFieldValue = "test.a,test.c",
@@ -216,7 +216,7 @@ public class EnrichTest
             null);
         var httpClient = new HttpClient(
             new MockHttpMessageHandler(SendAsync));
-        var enrich = new Enrich(httpClient)
+        var enrich = new EnrichRuleAction(httpClient)
         {
             UrlFieldValue = "http://localhost:8888",
             PayloadFieldValue = "test.a,test.c",
